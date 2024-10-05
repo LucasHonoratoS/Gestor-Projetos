@@ -22,15 +22,13 @@ class Project extends Model
 
     public function getStatusAttribute()
     {
-        $totalTasks = $this->tasks()->count();
-        $completedTasks = $this->tasks()->where('completed', true)->count();
-
-        if ($totalTasks === 0) {
-            return 'planejado'; // Se não houver tarefas, considerar como planejado
-        } elseif ($completedTasks === $totalTasks) {
-            return 'concluído';
+        if ($this->tasks->isEmpty()) {
+            return 'planejado';
+        } elseif ($this->tasks->where('completed', false)->isEmpty()) {
+            return 'completo';
         } else {
             return 'em andamento';
         }
     }
+
 }

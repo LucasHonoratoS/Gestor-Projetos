@@ -47,13 +47,21 @@ class ProjectController extends Controller
     // Atualiza um projeto existente
     public function update(Request $request, Project $project)
     {
+        // Validação dos dados
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
-        $project->update($request->all()); // Atualiza os dados do projeto
-        return redirect()->route('projects.index')->with('success', 'Projeto atualizado com sucesso!'); // Redireciona para a lista de projetos
+        // Atualizar os dados do projeto
+        $project->name = $request->name;
+        $project->description = $request->description;
+
+        // Salvar as alterações
+        $project->save();
+
+        // Redirecionar com mensagem de sucesso
+        return redirect()->route('projects.index', $project->id)->with('success', 'Projeto atualizado com sucesso!');
     }
 
     // Remove um projeto existente

@@ -20,7 +20,7 @@
 <div class="container">
     <h1 class="text-center">Projetos</h1>
 
-    <a href="{{ route('projects.create') }}" class="btn btn-primary mb-4">Criar Novo Projeto</a>
+    <a href="{{ route('tasks.create') }}" class="btn btn-primary mb-4">Criar Novo Projeto</a>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -28,13 +28,13 @@
 
     <!-- Kanban layout for project statuses -->
     <div class="row">
-        <!-- Planned Projects -->
+        <!-- Planned tasks -->
         <div class="col-md-4">
             <h3 class="text-center">Planejado</h3>
             <div class="kanban-column">
-                @foreach($projects as $project)
+                @foreach($tasks as $project)
                     @if($project->status == 'planejado')
-                        <div class="card mb-3 shadow-sm" style="cursor:pointer;" onclick="window.location.href='{{ route('projects.edit', $project) }}'">
+                        <div class="card mb-3 shadow-sm" style="cursor:pointer;" onclick="window.location.href='{{ route('tasks.edit', $project) }}'">
                             <div class="card-body text-center">
                                 <h5 class="card-title">{{ $project->name }}</h5>
                             </div>
@@ -44,13 +44,13 @@
             </div>
         </div>
 
-        <!-- In Progress Projects -->
+        <!-- In Progress tasks -->
         <div class="col-md-4">
             <h3 class="text-center">Em Andamento</h3>
             <div class="kanban-column">
-                @foreach($projects as $project)
-                    @if($project->status == 'em andamento')
-                        <div class="card mb-3 shadow-sm" style="cursor:pointer;" onclick="window.location.href='{{ route('projects.edit', $project) }}'">
+                @foreach($tasks as $project)
+                    @if($project->status == 'Em Andamento')
+                        <div class="card mb-3 shadow-sm" style="cursor:pointer;" onclick="window.location.href='{{ route('tasks.edit', $project) }}'">
                             <div class="card-body text-center">
                                 <h5 class="card-title">{{ $project->name }}</h5>
                             </div>
@@ -60,13 +60,13 @@
             </div>
         </div>
 
-        <!-- Completed Projects -->
+        <!-- Completed tasks -->
         <div class="col-md-4">
             <h3 class="text-center">Completos</h3>
             <div class="kanban-column">
-                @foreach($projects as $project)
-                    @if($project->status == 'completo')
-                        <div class="card mb-3 shadow-sm" style="cursor:pointer;" onclick="window.location.href='{{ route('projects.edit', $project) }}'">
+                @foreach($tasks as $project)
+                    @if($project->status == 'Completo')
+                        <div class="card mb-3 shadow-sm" style="cursor:pointer;" onclick="window.location.href='{{ route('tasks.edit', $project) }}'">
                             <div class="card-body text-center">
                                 <h5 class="card-title">{{ $project->name }}</h5>
                             </div>

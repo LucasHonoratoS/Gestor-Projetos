@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -15,21 +16,27 @@ class TaskController extends Controller
     }
 
     // Mostra o formulário para criar uma nova tarefa
-    public function create()
+    public function create($projectId)
     {
-        return view('tasks.create');
+        $project = Project::findOrFail($projectId);
+        return view('tasks.create', compact('project'));
     }
 
     // Armazena uma nova tarefa
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'name' => 'required',
+            'project_id' => 'required|exists:projects,id',
         ]);
 
-        Task::create($request->all());
-        return redirect()->route('tasks.index')->with('success', 'Tarefa criada com sucesso!');
+        Task::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'project_id' => $request->project_id,
+        ]);
+
+        return redirect()->route('projects.edit', $request->project_id)->with('success', 'Tarefa adicionada com sucesso!');
     }
 
     // Mostra uma tarefa específica
@@ -41,7 +48,8 @@ class TaskController extends Controller
     // Mostra o formulário para editar uma tarefa existente
     public function edit(Task $task)
     {
-        return view('tasks.edit', compact('task'));
+        $project = Project::findOrFail($task->project_id);
+        return view('tasks.edit', compact('task', 'project'));
     }
 
     // Atualiza uma tarefa existente
@@ -51,9 +59,10 @@ class TaskController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
-
+        
         $task->update($request->all());
-        return redirect()->route('tasks.index')->with('success', 'Tarefa atualizada com sucesso!');
+
+        return redirect()->route('projects.edit', $task->project_id)->with('success', 'Tarefa atualizada com sucesso!');
     }
 
     // Atualiza o estado de conclusão de uma tarefa
@@ -61,14 +70,17 @@ class TaskController extends Controller
     {
         $task->completed = !$task->completed; // Alterna o estado de completed
         $task->save();
-
-        return redirect()->route('tasks.index')->with('success', 'Tarefa atualizada com sucesso!');
+    
+        return response()->json(['completed' => $task->completed]);
     }
+
 
     // Remove uma tarefa existente
     public function destroy(Task $task)
     {
         $task->delete();
-        return redirect()->route('tasks.index')->with('success', 'Tarefa removida com sucesso!');
+    
+        return response()->json(['success' => true, 'message' => 'Tarefa removida com sucesso!']);
     }
+    
 }
